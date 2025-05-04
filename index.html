@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>まさひとガチャ＆動画</title>
+  <title>まさひとガチャ</title>
   <style>
     body {
       font-family: sans-serif;
@@ -24,18 +24,6 @@
     button:hover {
       background: #666;
     }
-    .section {
-      display: none;
-      margin-top: 2em;
-    }
-    video {
-      width: 90%;
-      max-width: 800px;
-      border: 5px solid #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      margin-top: 20px;
-    }
     #pullArea {
       width: 150px;
       height: 150px;
@@ -43,12 +31,8 @@
       background: url('daada.PNG') no-repeat center center;
       background-size: cover;
       border-radius: 50%;
-      font-size: 0;
-      user-select: none;
-      touch-action: none;
-      cursor: grab;
-      transition: transform 0.1s;
       position: relative;
+      cursor: grab;
     }
     #pullMessage {
       position: absolute;
@@ -97,73 +81,45 @@
   </style>
 </head>
 <body>
-  <h1>まさひとガチャ＆動画</h1>
-  <button id="switchButton" onclick="toggleSection()">▶ 動画ページへ</button>
-
-  <!-- ガチャセクション -->
-  <div id="gacha" class="section">
-    <div id="pullArea">
-      <div id="pullMessage">下にひっぱれ！</div>
-    </div>
-    <div id="effect"></div>
-    <div id="result"></div>
-    <div id="images"></div>
+  <h1>まさひとガチャ</h1>
+  <div id="pullArea">
+    <div id="pullMessage">下にひっぱれ！</div>
   </div>
-
-  <!-- 動画セクション -->
-  <div id="video" class="section">
-    <video controls>
-      <source src="masa001.mp4" type="video/mp4">
-      お使いのブラウザは動画タグに対応していません。
-    </video>
-  </div>
+  <div id="effect"></div>
+  <div id="result"></div>
+  <div id="images"></div>
 
   <script>
-    let currentSection = 'gacha';
-
-    function showSection(section) {
-      document.getElementById('gacha').style.display = (section === 'gacha') ? 'block' : 'none';
-      document.getElementById('video').style.display = (section === 'video') ? 'block' : 'none';
-      const button = document.getElementById('switchButton');
-      if (section === 'gacha') {
-        button.textContent = '▶ 動画ページへ';
-      } else {
-        button.textContent = '▶ ガチャページへ';
-      }
-      currentSection = section;
-    }
-
-    function toggleSection() {
-      if (currentSection === 'gacha') {
-        showSection('video');
-      } else {
-        showSection('gacha');
-      }
-    }
-
-    // 初期表示はガチャ
-    showSection('gacha');
-
-    // ガチャロジック
     const gachaPool = [
-      { name: "kkkk", rarity: "SSR", image: "kkkk.PNG", chance: 2 },
-      { name: "masa", rarity: "SSR", image: "masa.PNG", chance: 2 },
-      { name: "これはいいまさ", rarity: "SSR", image: "これはいいまさ.PNG", chance: 1 },
-      { name: "hs", rarity: "SR", image: "hs.PNG", chance: 4 },
-      { name: "uyikl", rarity: "SR", image: "uyikl.PNG", chance: 4 },
-      { name: "zsdfg", rarity: "SR", image: "zsdfg.PNG", chance: 4 },
-      { name: "dgghsdhash", rarity: "SR", image: "dgghsdhash.PNG", chance: 4 },
-      { name: "af", rarity: "R", image: "af.PNG", chance: 7 },
-      { name: "ag", rarity: "R", image: "ag.PNG", chance: 7 },
-      { name: "wrtj", rarity: "R", image: "wrtj.PNG", chance: 7 },
-      { name: "qqq", rarity: "R", image: "qqq.PNG", chance: 7 },
-      { name: "rth", rarity: "R", image: "rth.PNG", chance: 7 },
-      { name: "sssss", rarity: "R", image: "sssss.PNG", chance: 7 },
-      { name: "adadada", rarity: "N", image: "adadada.PNG", chance: 15 },
-      { name: "adadadada", rarity: "N", image: "adadadada.PNG", chance: 15 },
-      { name: "daada", rarity: "N", image: "daada.PNG", chance: 15 },
-      { name: "juu", rarity: "N", image: "juu.PNG", chance: 15 },
-      { name: "yjwryjwryj", rarity: "N", image: "yjwryjwryj.PNG", chance: 15 }
+      { name: "かわいいまさひと", rarity: "SSR", image: "かわいいまさひと.PNG", chance: 2 },
+      { name: "これはいいまさ", rarity: "SSR", image: "これはいいまさ.PNG", chance: 2 },
+      { name: "感じてるまさひと", rarity: "SSR", image: "感じてるまさひと.PNG", chance: 2 },
+
+      { name: "誰とも仲良くないまさひと", rarity: "SR", image: "誰とも仲良くないまさひと.PNG", chance: 4 },
+      { name: "茶色いまさひと", rarity: "SR", image: "茶色いまさひと.PNG", chance: 4 },
+      { name: "最前列まさひと", rarity: "SR", image: "最前列まさひと.PNG", chance: 4 },
+      { name: "キャベツむしゃむしゃまさひと", rarity: "SR", image: "キャベツむしゃむしゃまさひと.PNG", chance: 4 },
+      { name: "キスまさひと", rarity: "SR", image: "キスまさひと.PNG", chance: 4 },
+
+      { name: "ヘルメットまさひと", rarity: "R", image: "ヘルメットまさひと.PNG", chance: 7 },
+      { name: "弱虫ペダルなまさひと", rarity: "R", image: "弱虫ペダルなまさひと.PNG", chance: 7 },
+      { name: "三分の一まさひと", rarity: "R", image: "三分の一まさひと.PNG", chance: 7 },
+      { name: "作り笑顔まさひと", rarity: "R", image: "作り笑顔まさひと.PNG", chance: 7 },
+      { name: "陰キャまさひと", rarity: "R", image: "陰キャまさひと.PNG", chance: 7 },
+      { name: "食べ物で遊ぶまさひと", rarity: "R", image: "食べ物で遊ぶまさひと.PNG", chance: 7 },
+      { name: "マサー", rarity: "R", image: "マサー.jpg", chance: 7 },
+      { name: "にっこりまさひと", rarity: "R", image: "にっこりまさひと.jpg", chance: 7 },
+
+      { name: "100均でイキるまさひと", rarity: "N", image: "100均でイキるまさひと.jpg", chance: 15 },
+      { name: "MacBookまさひと", rarity: "N", image: "MacBookまさひと.PNG", chance: 15 },
+      { name: "きっしょいまさひと", rarity: "N", image: "きっしょいまさひと.PNG", chance: 15 },
+      { name: "きもいまさひと", rarity: "N", image: "きもいまさひと.jpg", chance: 15 },
+      { name: "イってるまさひと", rarity: "N", image: "イってるまさひと.jpg", chance: 15 },
+      { name: "ブサイクなまさひと", rarity: "N", image: "ブサイクなまさひと.jpg", chance: 15 },
+      { name: "凛々しいまさひとい", rarity: "N", image: "凛々しいまさひとい.png", chance: 15 },
+      { name: "普通に老けてるまさひと", rarity: "N", image: "普通に老けてるまさひと.jpg", chance: 15 },
+      { name: "青春まさひと", rarity: "N", image: "青春まさひと.jpg", chance: 15 },
+      { name: "先生とまさひと", rarity: "N", image: "先生とまさひと.PNG", chance: 15 }
     ];
 
     let startY = 0;
