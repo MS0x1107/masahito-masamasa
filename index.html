@@ -3,93 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>まさひとガチャ＆動画</title>
+  <title>まさひとガチャ</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #222;
-      color: #fff;
-      text-align: center;
-      padding: 2em;
-    }
-    button {
-      margin: 0.5em;
-      padding: 0.5em 1em;
-      background: #444;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #666;
-    }
-    .section {
-      display: none;
-      margin-top: 2em;
-    }
-    video {
-      width: 90%;
-      max-width: 800px;
-      border: 5px solid #fff;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      margin-top: 20px;
-    }
-    #pullArea {
-      width: 150px;
-      height: 150px;
-      margin: 2em auto;
-      background: url('daada.PNG') no-repeat center center;
-      background-size: cover;
-      border-radius: 50%;
-      font-size: 0;
-      user-select: none;
-      touch-action: none;
-      cursor: grab;
-      transition: transform 0.1s;
-      position: relative;
-    }
-    #pullMessage {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 20px;
-      font-weight: bold;
-      animation: blink 1s infinite alternate, scaleBounce 1s infinite alternate;
-      pointer-events: none;
-    }
-    @keyframes blink {
-      from { opacity: 1; }
-      to { opacity: 0.4; }
-    }
-    @keyframes scaleBounce {
-      from { transform: translate(-50%, -50%) scale(1); }
-      to { transform: translate(-50%, -50%) scale(1.2); }
-    }
-    #effect {
-      width: 100%;
-      height: 200px;
-      background: rgba(255, 215, 0, 0.5);
-      display: none;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    img {
-      max-width: 90%;
-      margin-top: 1em;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-    #result {
-      font-size: 22px;
-      margin-top: 1em;
-      font-weight: bold;
-    }
+    body { font-family: sans-serif; background: #222; color: #fff; text-align: center; padding: 2em; }
+    button { margin: 0.5em; padding: 0.5em 1em; background: #444; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #666; }
+    .section { display: none; }
+    img, video { max-width: 90%; margin-top: 1em; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
     .SSR { color: gold; }
     .SR  { color: violet; }
     .R   { color: lightblue; }
@@ -97,85 +17,97 @@
   </style>
 </head>
 <body>
-  <h1>まさひとガチャ＆動画</h1>
+  <h1 id="pageTitle">まさひとガチャ</h1>
   <button id="switchButton" onclick="toggleSection()">▶ 動画ページへ</button>
 
-  <!-- ガチャセクション -->
+  <!-- ガチャページ -->
   <div id="gacha" class="section">
-    <div id="pullArea">
-      <div id="pullMessage">下にひっぱれ！</div>
+    <div id="pullArea" style="width:150px; height:150px; margin:2em auto; background:url('daada.PNG') no-repeat center center; background-size:cover; border-radius:50%; cursor:grab; position:relative;">
+      <div id="pullMessage" style="position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); font-size:20px; font-weight:bold; animation:blink 1s infinite alternate, scaleBounce 1s infinite alternate; pointer-events:none;">下にひっぱれ！</div>
     </div>
-    <div id="effect"></div>
-    <div id="result"></div>
+    <div id="effect" style="width:100%; height:200px; background:rgba(255,215,0,0.5); display:none; animation:spin 1s linear infinite;"></div>
+    <div id="result" style="font-size:22px; margin-top:1em; font-weight:bold;"></div>
     <div id="images"></div>
   </div>
 
-  <!-- 動画セクション -->
+  <!-- 動画ページ -->
   <div id="video" class="section">
-    <video controls>
-      <source src="masa001.mp4" type="video/mp4">
-      お使いのブラウザは動画タグに対応していません。
-    </video>
+    <h2>動画一覧</h2>
+    <div id="videoList"></div>
   </div>
 
   <script>
-    let currentSection = 'gacha';
+    const gachaPool = [
+      { name: "かわいいまさひと", rarity: "SSR", image: "かわいいまさひと.PNG", chance: 2 },
+      { name: "これはいいまさ", rarity: "SSR", image: "これはいいまさ.PNG", chance: 2 },
+      { name: "感じてるまさひと", rarity: "SSR", image: "感じてるまさひと.PNG", chance: 2 },
+      { name: "誰とも仲良くないまさひと", rarity: "SR", image: "誰とも仲良くないまさひと.PNG", chance: 4 },
+      { name: "茶色いまさひと", rarity: "SR", image: "茶色いまさひと.PNG", chance: 4 },
+      { name: "最前列まさひと", rarity: "SR", image: "最前列まさひと.PNG", chance: 4 },
+      { name: "キャベツむしゃむしゃまさひと", rarity: "SR", image: "キャベツむしゃむしゃまさひと.PNG", chance: 4 },
+      { name: "キスまさひと", rarity: "SR", image: "キスまさひと.PNG", chance: 4 },
+      { name: "ヘルメットまさひと", rarity: "R", image: "ヘルメットまさひと.PNG", chance: 7 },
+      { name: "弱虫ペダルなまさひと", rarity: "R", image: "弱虫ペダルなまさひと.PNG", chance: 7 },
+      { name: "三分の一まさひと", rarity: "R", image: "三分の一まさひと.PNG", chance: 7 },
+      { name: "作り笑顔まさひと", rarity: "R", image: "作り笑顔まさひと.PNG", chance: 7 },
+      { name: "陰キャまさひと", rarity: "R", image: "陰キャまさひと.PNG", chance: 7 },
+      { name: "食べ物で遊ぶまさひと", rarity: "R", image: "食べ物で遊ぶまさひと.PNG", chance: 7 },
+      { name: "マサー", rarity: "R", image: "マサー.jpg", chance: 7 },
+      { name: "にっこりまさひと", rarity: "R", image: "にっこりまさひと.jpg", chance: 7 },
+      { name: "100均でイキるまさひと", rarity: "N", image: "100均でイキるまさひと.jpg", chance: 15 },
+      { name: "MacBookまさひと", rarity: "N", image: "MacBookまさひと.PNG", chance: 15 },
+      { name: "きっしょいまさひと", rarity: "N", image: "きっしょいまさひと.PNG", chance: 15 },
+      { name: "きもいまさひと", rarity: "N", image: "きもいまさひと.jpg", chance: 15 },
+      { name: "イってるまさひと", rarity: "N", image: "イってるまさひと.jpg", chance: 15 },
+      { name: "ブサイクなまさひと", rarity: "N", image: "ブサイクなまさひと.jpg", chance: 15 },
+      { name: "凛々しいまさひとい", rarity: "N", image: "凛々しいまさひとい.png", chance: 15 },
+      { name: "普通に老けてるまさひと", rarity: "N", image: "普通に老けてるまさひと.jpg", chance: 15 },
+      { name: "青春まさひと", rarity: "N", image: "青春まさひと.jpg", chance: 15 },
+      { name: "先生とまさひと", rarity: "N", image: "先生とまさひと.PNG", chance: 15 }
+    ];
 
+    const videoFiles = [
+      "masa001.mp4", "masa002.mp4", "masa003.mp4", "masa004.mp4", "masa005.mp4",
+      "masa006.mp4", "masa007.mp4", "masa008.mp4", "masa009.mp4", "masa010.mp4",
+      "masa011.mp4", "masa012.mp4", "masa013.mp4", "masa014.mp4", "masa015.mp4",
+      "masa016.mp4", "masa017.mp4", "masa018.mp4", "masa019.mp4", "masa020.mp4",
+      "masa021.mp4", "masa022.mp4", "masa023.mp4", "masa024.mp4"
+    ];
+
+    // 切り替え処理
+    let currentSection = 'gacha';
     function showSection(section) {
       document.getElementById('gacha').style.display = (section === 'gacha') ? 'block' : 'none';
       document.getElementById('video').style.display = (section === 'video') ? 'block' : 'none';
-      const button = document.getElementById('switchButton');
-      if (section === 'gacha') {
-        button.textContent = '▶ 動画ページへ';
-      } else {
-        button.textContent = '▶ ガチャページへ';
-      }
+      document.getElementById('pageTitle').textContent = (section === 'gacha') ? 'まさひとガチャ' : 'まさひと動画';
+      document.getElementById('switchButton').textContent = (section === 'gacha') ? '▶ 動画ページへ' : '▶ ガチャページへ';
       currentSection = section;
     }
-
     function toggleSection() {
-      if (currentSection === 'gacha') {
-        showSection('video');
-      } else {
-        showSection('gacha');
-      }
+      showSection(currentSection === 'gacha' ? 'video' : 'gacha');
     }
 
-    // 初期表示はガチャ
+    // 初期表示
     showSection('gacha');
 
-    // ガチャロジック
-    const gachaPool = [
-      { name: "kkkk", rarity: "SSR", image: "kkkk.PNG", chance: 2 },
-      { name: "masa", rarity: "SSR", image: "masa.PNG", chance: 2 },
-      { name: "これはいいまさ", rarity: "SSR", image: "これはいいまさ.PNG", chance: 1 },
-      { name: "hs", rarity: "SR", image: "hs.PNG", chance: 4 },
-      { name: "uyikl", rarity: "SR", image: "uyikl.PNG", chance: 4 },
-      { name: "zsdfg", rarity: "SR", image: "zsdfg.PNG", chance: 4 },
-      { name: "dgghsdhash", rarity: "SR", image: "dgghsdhash.PNG", chance: 4 },
-      { name: "af", rarity: "R", image: "af.PNG", chance: 7 },
-      { name: "ag", rarity: "R", image: "ag.PNG", chance: 7 },
-      { name: "wrtj", rarity: "R", image: "wrtj.PNG", chance: 7 },
-      { name: "qqq", rarity: "R", image: "qqq.PNG", chance: 7 },
-      { name: "rth", rarity: "R", image: "rth.PNG", chance: 7 },
-      { name: "sssss", rarity: "R", image: "sssss.PNG", chance: 7 },
-      { name: "adadada", rarity: "N", image: "adadada.PNG", chance: 15 },
-      { name: "adadadada", rarity: "N", image: "adadadada.PNG", chance: 15 },
-      { name: "daada", rarity: "N", image: "daada.PNG", chance: 15 },
-      { name: "juu", rarity: "N", image: "juu.PNG", chance: 15 },
-      { name: "yjwryjwryj", rarity: "N", image: "yjwryjwryj.PNG", chance: 15 }
-    ];
+    // 動画一覧作成
+    const videoList = document.getElementById('videoList');
+    videoFiles.forEach(file => {
+      const vid = document.createElement('video');
+      vid.src = file;
+      vid.controls = true;
+      vid.style.margin = '1em';
+      videoList.appendChild(vid);
+    });
 
+    // ガチャ処理
     let startY = 0;
     let pullDistance = 0;
     const threshold = 80;
     const pullArea = document.getElementById("pullArea");
     const pullMessage = document.getElementById("pullMessage");
 
-    function getY(e) {
-      return e.touches ? e.touches[0].clientY : e.clientY;
-    }
-
+    function getY(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
     function onStart(e) {
       startY = getY(e);
       if (e.type === "mousedown") {
@@ -186,7 +118,6 @@
         document.addEventListener("touchend", onEnd);
       }
     }
-
     function onMove(e) {
       const currentY = getY(e);
       pullDistance = currentY - startY;
@@ -196,10 +127,8 @@
         pullMessage.textContent = "引っぱり中…";
       }
     }
-
     function onEnd(e) {
       pullArea.style.transform = `scaleY(1)`;
-
       if (pullDistance > threshold) {
         pullMessage.textContent = "まさひと発動！";
         startGacha();
@@ -207,7 +136,6 @@
         pullMessage.textContent = "もっと強く引っぱって！";
       }
       pullDistance = 0;
-
       document.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseup", onEnd);
       document.removeEventListener("touchmove", onMove);
@@ -218,33 +146,23 @@
       const effect = document.getElementById("effect");
       const result = document.getElementById("result");
       const images = document.getElementById("images");
-
       effect.style.display = "block";
       result.textContent = "";
       images.innerHTML = "";
-
       setTimeout(() => {
         effect.style.display = "none";
-
         let rand = Math.random() * 100;
         let total = 0;
         let selected;
-
         for (let item of gachaPool) {
           total += item.chance;
-          if (rand < total) {
-            selected = item;
-            break;
-          }
+          if (rand < total) { selected = item; break; }
         }
-
         result.innerHTML = `🎉 ${selected.name} が出た！（${selected.rarity}）`;
         result.className = selected.rarity;
-
         const img = document.createElement("img");
         img.src = selected.image;
         images.appendChild(img);
-
         pullMessage.textContent = "下にひっぱれ！";
       }, 2000);
     }
